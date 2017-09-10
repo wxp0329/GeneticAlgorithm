@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class Main {
 
@@ -11,32 +12,37 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String str = null;
 		try {
-			
-			while ((str = br.readLine()) != null) {
-				long start = System.currentTimeMillis();
-				int num = Integer.valueOf(str.trim());
-				ArrayList<Double> al = new ArrayList<>();
-				for (int i = 1; i <= num; i++) {
-					for (int j = 1; j <= num; j++) {
-						al.add(Math.pow(i, j));
+			while (true) {
+				String sss =br.readLine();
+				if(sss == null){
+					break;
+				}
+				TreeSet<Integer> hs = new TreeSet<>();
+				for(int i = 0;i<2;i++){
+					str = br.readLine().trim();
+					String [] strs = str.split(" ");
+					for(String s : strs){
+						hs.add(Integer.valueOf(s));
 					}
 				}
-//				System.out.println(al);
-//				int count = 0;
-//				for (double s1 : al) {
-//					for (double s2 : al) {
-//						if (s1 == s2) {							
-//							++count;
-//						}
-//					}
-//				}
-//				System.out.println(count);
-				long end = System.currentTimeMillis();
-				System.out.println("time: "+(end-start));
+				int ii = 0;
+				for(int i : hs){
+					if(ii++ == hs.size()-1){
+						System.out.println(i);
+						break;
+					}					
+					System.out.print(i+" ");
+				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
+	
 }
