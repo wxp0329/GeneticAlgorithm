@@ -34,7 +34,6 @@ public class Test {
 			Collections.shuffle(ports);
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("time is : "+(end-start));
 		DrawGraph.drawGraph(g);
 	}
 }
