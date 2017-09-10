@@ -32,7 +32,6 @@ public class Main {
 						break;
 					}					
 					System.out.print(i+" ");
-					//44444444444444444444444
 				}
 			}
 		} catch (Exception e) {
