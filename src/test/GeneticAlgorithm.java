@@ -143,7 +143,7 @@ public class GeneticAlgorithm {
 	/**
 	 * y=4sin[x+¦Ð/2]+6 max=10 min=2
 	 * 
-	 * @return
+	 * @return y
 	 */
 	public static double mySinX(double x) {
 		return 4 * Math.sin(x + Math.PI / 2) + 6;
