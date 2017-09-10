@@ -1,5 +1,12 @@
 package test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
@@ -35,15 +42,54 @@ public class Graph {
 		return edge;
 	}
 
-	public TreeMap<String, Edge> generateUndirectedCompleteGraph() {
-		Collection<Port> ports = this.getPorts().values();
-		for (Port p : ports) {
-			for (Port pp : ports) {
-				if (p != pp) {
-					p.appendAfter(pp, new Random().nextInt(100) + 10);
+	public TreeMap<String, Edge> generateUndirectedCompleteGraph(String fileName, int portsNum) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fileName)));
+			for (int i = 1; i <= portsNum; i++) {
+				String name = i + "";
+				new Port(name, this);
+			}
+			Collection<Port> ports = this.getPorts().values();
+			bw.write(ports.size() + "");
+			bw.newLine();
+			for (Port p : ports) {
+				for (Port pp : ports) {
+					if (!(p.equals(pp))) {
+						int len = new Random().nextInt(100) + 10;
+						p.appendAfter(pp, len);
+						bw.write(p + " " + pp + " " + len);
+						bw.newLine();
+						bw.flush();
+					}
 				}
 			}
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
 		return edge;
+	}
+
+	public void loadUndirectedCompleteGraph(String fileName) {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(new File(fileName)));
+			int num = Integer.valueOf(br.readLine().trim());
+
+			for (int i = 1; i <= num; i++) {
+				String name = i + "";
+				new Port(name, this);
+			}
+			TreeMap<String, Port> ports = this.getPorts();
+			String line =null;
+			while ((line= br.readLine())!=null) {
+				String[] strs = line.trim().split(" ");
+				ports.get(strs[0]).appendAfter(ports.get(strs[1]), Integer.valueOf(strs[2]));
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -1,9 +1,12 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class GeneticAlgorithm {
 	public static void main(String[] args) {
@@ -13,7 +16,15 @@ public class GeneticAlgorithm {
 		fitnesses.add(new Port("50"));
 		fitnesses.add(new Port("10"));
 
-		System.out.println(mutation(fitnesses));
+	}
+
+	private TreeMap<String, Edge> edges;
+	private Graph g;
+	private int portNum;
+	public GeneticAlgorithm(Graph g) {
+		this.edges = g.getGraph();
+		this.g=g;
+		this.portNum = g.getPorts().values().size();
 	}
 
 	/**
@@ -24,7 +35,12 @@ public class GeneticAlgorithm {
 	 * @param edges
 	 *            一条染色体中各个基因之间的距离
 	 */
-	public static int fitness(ArrayList<Port> ports, TreeMap<String, Edge> edges) {
+	public int fitness(ArrayList<Port> ports) {
+		HashSet<Port> test = new HashSet<>(ports);
+		//该染色体的基因数不等于portNum说明有重复走得点，非法路径返回0
+		if(test.size() != portNum){
+			return 0;
+		}
 		int dist = 0;
 		for (int i = 0; i < ports.size() - 1; i++) {
 			Port fore = ports.get(i);
@@ -41,18 +57,18 @@ public class GeneticAlgorithm {
 	 * 
 	 * @param fitnesses
 	 *            存储的是每个染色体的适应度值
+	 * @return selected 存储被选中的染色体在fitnesses中的染色体
 	 */
-	public static ArrayList<Integer> randomSelect(ArrayList<Integer> fitnesses) {
+	public ArrayList<Integer> randomSelect(Collection<ChoromFitnessPair> fitnesses) {
 		// probs存储每个fitness所占的概率
 		ArrayList<Double> probs = new ArrayList<>();
 		int sum = 0;
-		for (int fit : fitnesses) {
-			sum += fit;
+		for (ChoromFitnessPair fit : fitnesses) {
+			sum += fit.getFitness();
 		}
-		for (int fit : fitnesses) {
-			probs.add((fit * 1. / sum));
+		for (ChoromFitnessPair fit : fitnesses) {
+			probs.add((fit.getFitness() * 1. / sum));
 		}
-		System.out.println("probs: " + probs);
 		// scope存储转盘的每个范围
 		ArrayList<Scope> scope = new ArrayList<>();
 		double right = 0;
@@ -62,12 +78,10 @@ public class GeneticAlgorithm {
 			scope.add(new Scope(left, right));
 			left = right;
 		}
-		System.out.println("scope: " + scope);
 		// 生成转盘指针
 		ArrayList<Double> points = new ArrayList<>();
 		points.add(Math.random());
 		points.add(Math.random());
-		System.out.println("points: " + points);
 		// 存储转盘转到的位置
 		ArrayList<Integer> selected = new ArrayList<>();
 
@@ -85,47 +99,64 @@ public class GeneticAlgorithm {
 	/**
 	 * 单点交叉染色体
 	 * 
-	 * @param left
+	 * @param leftChorom
 	 *            需要交叉的一个染色体
 	 * @param rigth
 	 *            需要交叉的一个染色体
 	 */
-	public static ArrayList<ArrayList<Integer>> intersect(ArrayList<Integer> left, ArrayList<Integer> right) {
-		ArrayList<ArrayList<Integer>> all = new ArrayList<>();
-		all.add(left);
-		all.add(right);
-		int index = new Random().nextInt(left.size());
+	public ArrayList<ChoromFitnessPair> intersect(ChoromFitnessPair left, ChoromFitnessPair right) {
+		// 获取两个pair的染色体
+		ArrayList<Port> leftChorom = new ArrayList<>(left.getChorom());
+		ArrayList<Port> rightChorom = new ArrayList<>(right.getChorom());
+		// 创建新的两个pair
+		ChoromFitnessPair leftNew = new ChoromFitnessPair();
+		ChoromFitnessPair rightNew = new ChoromFitnessPair();
+
+		ArrayList<ChoromFitnessPair> all = new ArrayList<>();
+
+		int index = new Random().nextInt(leftChorom.size());
 
 		// 整个染色体互换无意义
 		if (index == 0) {
+			all.add(left);
+			all.add(right);
 			return all;
 		}
 		// 开始换基因
-		ArrayList<Integer> temp = new ArrayList<>();
-		for (int i = index; i < left.size(); i++) {
-			temp.add(left.get(i));
-			left.set(i, right.get(i));
+		ArrayList<Port> temp = new ArrayList<>();
+		for (int i = index; i < leftChorom.size(); i++) {
+			temp.add(leftChorom.get(i));
+			leftChorom.set(i, rightChorom.get(i));
 		}
-		for (int i = index, j = 0; i < left.size(); i++, j++) {
-			right.set(i, temp.get(j));
+		for (int i = index, j = 0; i < leftChorom.size(); i++, j++) {
+			rightChorom.set(i, temp.get(j));
 		}
-
+		// 设置两个新pair的染色体和适应度值
+		leftNew.setChorom(leftChorom);
+		leftNew.setFitness(fitness(leftChorom));
+		rightNew.setChorom(rightChorom);
+		rightNew.setFitness(fitness(rightChorom));
+		all.add(leftNew);
+		all.add(rightNew);
 		return all;
 	}
 
 	/**
 	 * 变异染色体
 	 * 
-	 * @param selected
+	 * @param copy
 	 *            需要变异的一个染色体
 	 */
-	public static ArrayList<Port> mutation(ArrayList<Port> selected) {
+	public ChoromFitnessPair mutation(ChoromFitnessPair selected) {
+		// 创建一个新染色体
+		ChoromFitnessPair selectedNew = new ChoromFitnessPair();
+		ArrayList<Port> copy = new ArrayList<Port>(selected.getChorom());
 		ArrayList<Integer> hs = new ArrayList<>();
 		while (true) {
 			if (hs.size() == 2) {
 				break;
 			}
-			int r = new Random().nextInt(selected.size());
+			int r = new Random().nextInt(copy.size());
 			// 防止开始位置被替换
 			if (r == 0) {
 				continue;
@@ -133,17 +164,21 @@ public class GeneticAlgorithm {
 			if (!hs.contains(r))
 				hs.add(r);
 		}
-		Port temp = selected.get(hs.get(0));
-		Port temp1 = selected.get(hs.get(1));
-		selected.set(hs.get(0), temp1);
-		selected.set(hs.get(1), temp);
-		return selected;
+		Port temp = copy.get(hs.get(0));
+		Port temp1 = copy.get(hs.get(1));
+		copy.set(hs.get(0), temp1);
+		copy.set(hs.get(1), temp);
+
+		// 创建变异的pair，并设置新的染色体和适应度值
+		selectedNew.setChorom(copy);
+		selectedNew.setFitness(fitness(copy));
+		return selectedNew;
 	}
 
 	/**
 	 * y=4sin[x+π/2]+6 max=10 min=2
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public static double mySinX(double x) {
 		return 4 * Math.sin(x + Math.PI / 2) + 6;
