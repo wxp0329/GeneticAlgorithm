@@ -41,24 +41,5 @@ public class Main1 {
 			}
 		}
 	}
-	while ((str = br.readLine()) != null) {
-		int num = Integer.valueOf(str.trim());
-		ArrayList<Double> al = new ArrayList<>();
-		for (int i = 1; i <= num; i++) {
-			for (int j = 1; j <= num; j++) {
-				al.add(Math.pow(i, j));
-			}
-		}
-		System.out.println(al);
-		int count = 0;
-		for (Double s1 : al) {
-			for (Double s2 : al) {
-
-				if (s1 == s2) {
-					count++;
-				}
-			}
-		}
-		System.out.println(count);
-	}
+	
 }

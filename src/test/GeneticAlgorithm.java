@@ -140,6 +140,15 @@ public class GeneticAlgorithm {
 		return selected;
 	}
 
+	/**
+	 * y=4sin[x+π/2]+6 max=10 min=2
+	 * 
+	 * @return
+	 */
+	public static double mySinX(double x) {
+		return 4 * Math.sin(x + Math.PI / 2) + 6;
+	}
+
 	// 比较符号的左右值
 	private static class Scope {
 		double left;
