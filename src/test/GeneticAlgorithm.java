@@ -21,9 +21,10 @@ public class GeneticAlgorithm {
 	private TreeMap<String, Edge> edges;
 	private Graph g;
 	private int portNum;
+
 	public GeneticAlgorithm(Graph g) {
 		this.edges = g.getGraph();
-		this.g=g;
+		this.g = g;
 		this.portNum = g.getPorts().values().size();
 	}
 
@@ -37,9 +38,9 @@ public class GeneticAlgorithm {
 	 */
 	public int fitness(ArrayList<Port> ports) {
 		HashSet<Port> test = new HashSet<>(ports);
-		//该染色体的基因数不等于portNum说明有重复走得点，非法路径返回0
-		if(test.size() != portNum){
-			return 0;
+		// 该染色体的基因数不等于portNum说明有重复走得点，非法路径返回0
+		if (test.size() != portNum) {
+			return Integer.MAX_VALUE;
 		}
 		int dist = 0;
 		for (int i = 0; i < ports.size() - 1; i++) {
@@ -113,15 +114,9 @@ public class GeneticAlgorithm {
 		ChoromFitnessPair rightNew = new ChoromFitnessPair();
 
 		ArrayList<ChoromFitnessPair> all = new ArrayList<>();
+		// 从坐标1开始，因为从0开始没意义
+		int index = new Random().nextInt(leftChorom.size() - 1) + 1;
 
-		int index = new Random().nextInt(leftChorom.size());
-
-		// 整个染色体互换无意义
-		if (index == 0) {
-			all.add(left);
-			all.add(right);
-			return all;
-		}
 		// 开始换基因
 		ArrayList<Port> temp = new ArrayList<>();
 		for (int i = index; i < leftChorom.size(); i++) {
@@ -156,11 +151,8 @@ public class GeneticAlgorithm {
 			if (hs.size() == 2) {
 				break;
 			}
-			int r = new Random().nextInt(copy.size());
-			// 防止开始位置被替换
-			if (r == 0) {
-				continue;
-			}
+			// (copy.size() - 1) + 1防止开始节点被换掉
+			int r = new Random().nextInt(copy.size() - 1) + 1;
 			if (!hs.contains(r))
 				hs.add(r);
 		}
