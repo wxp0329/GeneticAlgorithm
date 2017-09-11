@@ -22,7 +22,7 @@ public class Test {
 	public static void main(String[] args) throws IOException {
 		Graph g = new Graph();
 		long start = System.currentTimeMillis();
-		g.generateUndirectedCompleteGraph("C:\\Users\\Administrator\\Desktop\\my.graph",5000);
+		g.generateUndirectedCompleteGraph("C:\\Users\\Administrator\\Desktop\\my.graph",2000);
 //		g.loadUndirectedCompleteGraph("C:\\Users\\Administrator\\Desktop\\my.graph");
 		long end = System.currentTimeMillis();
 		System.out.println(end-start);
