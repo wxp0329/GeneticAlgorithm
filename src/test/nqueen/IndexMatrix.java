@@ -7,11 +7,20 @@ import test.nqueen.Matrix.Cell;
 class IndexMatrix {
 	private HashSet<Cell> hs;
 	private int[][] m;
+	private int fitness;
 
-	public IndexMatrix(HashSet<Cell> hs, int[][] m) {
+	public IndexMatrix() {
+	}
+
+	public IndexMatrix(int[][] m) {
+		this.m = m;
+	}
+
+	public IndexMatrix(HashSet<Cell> hs, int[][] m, int fitness) {
 		super();
 		this.hs = hs;
 		this.m = m;
+		this.fitness = fitness;
 	}
 
 	public HashSet<Cell> getHs() {
@@ -28,6 +37,14 @@ class IndexMatrix {
 
 	public void setM(int[][] m) {
 		this.m = m;
+	}
+
+	public int getFitness() {
+		return fitness;
+	}
+
+	public void setFitness(int fitness) {
+		this.fitness = fitness;
 	}
 
 }

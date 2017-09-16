@@ -1,6 +1,8 @@
 package test.nqueen;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Random;
 
 public class Matrix {
@@ -20,10 +22,10 @@ public class Matrix {
 		for (Cell ind : hs) {
 			matrix[ind.row][ind.col] = 1;
 		}
-		return new IndexMatrix(hs,matrix);
+		return new IndexMatrix(hs, matrix,0);
 	}
 
-	public void printMatrix(int[][] m) {
+	public static void printMatrix(int[][] m) {
 		for (int i = 0; i < m.length; i++) {
 			for (int j = 0; j < m.length; j++) {
 				System.out.print(m[i][j] + " ");
@@ -32,12 +34,11 @@ public class Matrix {
 		}
 	}
 
-
-
-	class Cell {
+	static class Cell {
 		private int row;
 		private int col;
-		private int flag=0;
+		private int flag = 0;
+
 		public Cell(int row, int col) {
 			super();
 			this.row = row;
@@ -87,11 +88,27 @@ public class Matrix {
 		public void setFlag(int flag) {
 			this.flag = flag;
 		}
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return row+":"+col;
+		}
 	}
 
 	public static void main(String[] args) {
-		Matrix mat = new Matrix(8);
-
+		HashMap<int[][],Integer> hs = new HashMap<>();
+		while (hs.size()<5) {
+			Matrix mat = new Matrix(4);
+			IndexMatrix im = mat.createRandomMatrix();
+			int fit = GeneticAlgorithm.fitness(im);
+			if (fit >2) {
+				hs.put(im.getM(),fit);
+			}
+		}
+		for(Entry<int[][],	Integer>hh :hs.entrySet()){
+			printMatrix(hh.getKey());
+			System.out.println(hh.getValue());
+		}
 	}
 
 }
