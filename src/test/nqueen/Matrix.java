@@ -1,5 +1,9 @@
 package test.nqueen;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -11,7 +15,31 @@ public class Matrix {
 	public Matrix(int n) {
 		this.n = n;
 	}
-
+public void writeMatrixes(String fileName,int num){
+	BufferedWriter bw = null;
+	try {
+		bw = new BufferedWriter(new FileWriter(new File(fileName)));
+		bw.write("queens:"+n);
+		bw.newLine();
+		bw.write("matrixes:"+num);
+		bw.newLine();
+		for(int i = 0;i<num;i++){
+			IndexMatrix im = createRandomMatrix();
+			int[][] mat = im.getM();
+			for(int m = 0;m<mat.length;m++){
+				for(int n = 0;n<mat.length;n++){
+					bw.write(mat[m][n]+" ");
+				}
+				bw.newLine();
+				bw.flush();
+			}
+			bw.newLine();
+		}
+		bw.close();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
 	public IndexMatrix createRandomMatrix() {
 		int[][] matrix = new int[n][n];
 		HashSet<Cell> hs = new HashSet<>();
@@ -22,7 +50,7 @@ public class Matrix {
 		for (Cell ind : hs) {
 			matrix[ind.row][ind.col] = 1;
 		}
-		return new IndexMatrix(hs, matrix,0);
+		return new IndexMatrix(hs, matrix, 0);
 	}
 
 	public static void printMatrix(int[][] m) {
@@ -88,27 +116,17 @@ public class Matrix {
 		public void setFlag(int flag) {
 			this.flag = flag;
 		}
+
 		@Override
 		public String toString() {
 			// TODO Auto-generated method stub
-			return row+":"+col;
+			return row + ":" + col;
 		}
 	}
 
 	public static void main(String[] args) {
-		HashMap<int[][],Integer> hs = new HashMap<>();
-		while (hs.size()<5) {
-			Matrix mat = new Matrix(4);
-			IndexMatrix im = mat.createRandomMatrix();
-			int fit = GeneticAlgorithm.fitness(im);
-			if (fit >2) {
-				hs.put(im.getM(),fit);
-			}
-		}
-		for(Entry<int[][],	Integer>hh :hs.entrySet()){
-			printMatrix(hh.getKey());
-			System.out.println(hh.getValue());
-		}
+		Matrix mat = new Matrix(4);
+		mat.writeMatrixes("C:\\Users\\Administrator\\Desktop\\queen.mat", 5);
 	}
 
 }
