@@ -1,4 +1,4 @@
-package test;
+package test.tsp;
 
 import java.util.ArrayList;
 import java.util.Collection;

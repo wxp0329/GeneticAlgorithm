@@ -1,4 +1,4 @@
-package test;
+package test.tsp;
 
 public class Edge {
 	private Port forePort;

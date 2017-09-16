@@ -28,9 +28,9 @@ import com.mxgraph.util.mxDomUtils;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 
-import test.Edge;
-import test.Graph;
-import test.Port;
+import test.tsp.Edge;
+import test.tsp.Graph;
+import test.tsp.Port;
 
 public class DrawGraph extends JFrame {
 
