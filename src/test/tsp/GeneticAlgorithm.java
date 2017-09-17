@@ -49,7 +49,9 @@ public class GeneticAlgorithm {
 			Edge e = edges.get(fore.getName() + ":" + after.getName());
 			dist += e.getLen();
 		}
-		dist += edges.get(ports.get(ports.size() - 1).getName() + ":" + ports.get(0)).getLen();
+		dist += edges.get(
+				ports.get(ports.size() - 1).getName() + ":" + ports.get(0))
+				.getLen();
 		return dist;
 	}
 
@@ -60,10 +62,11 @@ public class GeneticAlgorithm {
 	 *            存储的是每个染色体的适应度值
 	 * @return selected 存储被选中的染色体在fitnesses中的染色体
 	 */
-	public ArrayList<Integer> randomSelect(Collection<ChoromFitnessPair> fitnesses) {
+	public ArrayList<Integer> randomSelect(
+			Collection<ChoromFitnessPair> fitnesses) {
 		// probs存储每个fitness所占的概率
 		ArrayList<Double> probs = new ArrayList<>();
-		int sum = 0;
+		double sum = 0;
 		for (ChoromFitnessPair fit : fitnesses) {
 			sum += fit.getFitness();
 		}
@@ -105,7 +108,8 @@ public class GeneticAlgorithm {
 	 * @param rigth
 	 *            需要交叉的一个染色体
 	 */
-	public ArrayList<ChoromFitnessPair> intersect(ChoromFitnessPair left, ChoromFitnessPair right) {
+	public ArrayList<ChoromFitnessPair> intersect(ChoromFitnessPair left,
+			ChoromFitnessPair right) {
 		// 获取两个pair的染色体
 		ArrayList<Port> leftChorom = new ArrayList<>(left.getChorom());
 		ArrayList<Port> rightChorom = new ArrayList<>(right.getChorom());
@@ -172,8 +176,15 @@ public class GeneticAlgorithm {
 	 * 
 	 * @return
 	 */
-	public static double mySinX(double x) {
-		return 4 * Math.sin(x + Math.PI / 2) + 6;
+	public int mySinX(double x) {
+		return (int) (4 * Math.sin(x + Math.PI / 2) + 6);
+	}
+
+	/**
+	 * y=6logn[10,x+40]-7.5
+	 */
+	public int myLogn(double x) {
+		return (int) (6*Math.log10(x+40)-7.5);
 	}
 
 	// 比较符号的左右值
