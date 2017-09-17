@@ -1,9 +1,13 @@
 package test.nqueen;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -15,31 +19,67 @@ public class Matrix {
 	public Matrix(int n) {
 		this.n = n;
 	}
-public void writeMatrixes(String fileName,int num){
-	BufferedWriter bw = null;
-	try {
-		bw = new BufferedWriter(new FileWriter(new File(fileName)));
-		bw.write("queens:"+n);
-		bw.newLine();
-		bw.write("matrixes:"+num);
-		bw.newLine();
-		for(int i = 0;i<num;i++){
-			IndexMatrix im = createRandomMatrix();
-			int[][] mat = im.getM();
-			for(int m = 0;m<mat.length;m++){
-				for(int n = 0;n<mat.length;n++){
-					bw.write(mat[m][n]+" ");
+
+	public ArrayList<IndexMatrix> loadMatrixes(String fileName) {
+		BufferedReader br = null;
+		ArrayList<IndexMatrix> al = null;
+		try {
+			br = new BufferedReader(new FileReader(new File(fileName)));
+			al = new ArrayList<>();
+			int queens = Integer.valueOf(br.readLine().trim().split(":")[1]);
+			int matNum = Integer.valueOf(br.readLine().trim().split(":")[1]);
+			for (int i = 0; i < matNum; i++) {
+				HashSet<Cell> cell = new HashSet<>();
+				int[][] mat = new int[queens][];
+				for (int j = 0; j < queens; j++) {
+					String[] line = br.readLine().trim().split(" ");
+					int[] matRow = new int[queens];
+					for (int n = 0; n < queens; n++) {
+						int c = Integer.valueOf(line[n]);
+						if (c == 1) {
+							cell.add(new Cell(j, n));
+						}
+						matRow[n] = c;
+					}
+					mat[j] = matRow;
+				}
+				al.add(new IndexMatrix(cell, mat, 0));
+				br.readLine();
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return al;
+	}
+
+	public void writeMatrixes(String fileName, int num) {
+		BufferedWriter bw = null;
+		try {
+			bw = new BufferedWriter(new FileWriter(new File(fileName)));
+			bw.write("queens:" + n);
+			bw.newLine();
+			bw.write("matrixes:" + num);
+			bw.newLine();
+			for (int i = 0; i < num; i++) {
+				IndexMatrix im = createRandomMatrix();
+				int[][] mat = im.getM();
+				for (int m = 0; m < mat.length; m++) {
+					for (int n = 0; n < mat.length; n++) {
+						bw.write(mat[m][n] + " ");
+					}
+					bw.newLine();
+					bw.flush();
 				}
 				bw.newLine();
-				bw.flush();
 			}
-			bw.newLine();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		bw.close();
-	} catch (IOException e) {
-		e.printStackTrace();
 	}
-}
+
 	public IndexMatrix createRandomMatrix() {
 		int[][] matrix = new int[n][n];
 		HashSet<Cell> hs = new HashSet<>();
@@ -126,7 +166,13 @@ public void writeMatrixes(String fileName,int num){
 
 	public static void main(String[] args) {
 		Matrix mat = new Matrix(4);
-		mat.writeMatrixes("C:\\Users\\Administrator\\Desktop\\queen.mat", 5);
+		String fileName = "C:\\Users\\Administrator\\Desktop\\queen.mat";
+//		mat.writeMatrixes("C:\\Users\\Administrator\\Desktop\\queen.mat", 5);
+		ArrayList<IndexMatrix> al = mat.loadMatrixes(fileName);
+		for(IndexMatrix im : al){
+			printMatrix(im.getM());
+			System.out.println(im.getHs());
+		}
 	}
 
 }
